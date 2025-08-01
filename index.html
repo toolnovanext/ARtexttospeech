@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Converter</title>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/toastify-js@1.12.0/src/toastify.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+        }
+        select, button {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .status {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #333;
+        }
+        .hidden {
+            display: none;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 role="heading" aria-level="2">Text to Speech Converter</h2>
+        <textarea id="textInput" placeholder="Enter or paste your text here..." aria-label="Text input for conversion"></textarea>
+
+        <label for="languageSelect">Select Language:</label>
+        <select id="languageSelect" aria-label="Select language for text-to-speech">
+            <option value="af">Afrikaans</option>
+            <option value="sq">Albanian</option>
+            <option value="am">Amharic</option>
+            <option value="ar">Arabic</option>
+            <option value="hy">Armenian</option>
+            <option value="az">Azerbaijani</option>
+            <option value="eu">Basque</option>
+            <option value="be">Belarusian</option>
+            <option value="bn">Bengali</option>
+            <option value="bs">Bosnian</option>
+            <option value="bg">Bulgarian</option>
+            <option value="ca">Catalan</option>
+            <option value="ceb">Cebuano</option>
+            <option value="ny">Chichewa</option>
+            <option value="zh">Chinese</option>
+            <option value="co">Corsican</option>
+            <option value="hr">Croatian</option>
+            <option value="cs">Czech</option>
+            <option value="da">Danish</option>
+            <option value="nl">Dutch</option>
+            <option value="en" selected>English</option>
+            <option value="eo">Esperanto</option>
+            <option value="et">Estonian</option>
+            <option value="tl">Filipino</option>
+            <option value="fi">Finnish</option>
+            <option value="fr">French</option>
+            <option value="fy">Frisian</option>
+            <option value="gl">Galician</option>
+            <option value="ka">Georgian</option>
+            <option value="de">German</option>
+            <option value="el">Greek</option>
+            <option value="gu">Gujarati</option>
+            <option value="ht">Haitian Creole</option>
+            <option value="ha">Hausa</option>
+            <option value="he">Hebrew</option>
+            <option value="hi">Hindi</option>
+            <option value="hmn">Hmong</option>
+            <option value="hu">Hungarian</option>
+            <option value="is">Icelandic</option>
+            <option value="ig">Igbo</option>
+            <option value="id">Indonesian</option>
+            <option value="ga">Irish</option>
+            <option value="it">Italian</option>
+            <option value="ja">Japanese</option>
+            <option value="jv">Javanese</option>
+            <option value="kn">Kannada</option>
+            <option value="kk">Kazakh</option>
+            <option value="km">Khmer</option>
+            <option value="ko">Korean</option>
+            <option value="ku">Kurdish</option>
+            <option value="ky">Kyrgyz</option>
+            <option value="lo">Lao</option>
+            <option value="la">Latin</option>
+            <option value="lv">Latvian</option>
+            <option value="lt">Lithuanian</option>
+            <option value="lb">Luxembourgish</option>
+            <option value="mk">Macedonian</option>
+            <option value="mg">Malagasy</option>
+            <option value="ms">Malay</option>
+            <option value="ml">Malayalam</option>
+            <option value="mt">Maltese</option>
+            <option value="mi">Maori</option>
+            <option value="mr">Marathi</option>
+            <option value="mn">Mongolian</option>
+            <option value="my">Myanmar</option>
+            <option value="ne">Nepali</option>
+            <option value="no">Norwegian</option>
+            <option value="or">Odia</option>
+            <option value="ps">Pashto</option>
+            <option value="fa">Persian</option>
+            <option value="pl">Polish</option>
+            <option value="pt">Portuguese</option>
+            <option value="pa">Punjabi</option>
+            <option value="ro">Romanian</option>
+            <option value="ru">Russian</option>
+            <option value="sm">Samoan</option>
+            <option value="gd">Scots Gaelic</option>
+            <option value="sr">Serbian</option>
+            <option value="st">Sesotho</option>
+            <option value="sn">Shona</option>
+            <option value="sd">Sindhi</option>
+            <option value="si">Sinhala</option>
+            <option value="sk">Slovak</option>
+            <option value="sl">Slovenian</option>
+            <option value="so">Somali</option>
+            <option value="es">Spanish</option>
+            <option value="su">Sundanese</option>
+            <option value="sw">Swahili</option>
+            <option value="sv">Swedish</option>
+            <option value="tg">Tajik</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="th">Thai</option>
+            <option value="tr">Turkish</option>
+            <option value="uk">Ukrainian</option>
+            <option value="ur">Urdu</option>
+            <option value="uz">Uzbek</option>
+            <option value="vi">Vietnamese</option>
+            <option value="cy">Welsh</option>
+            <option value="xh">Xhosa</option>
+            <option value="yi">Yiddish</option>
+            <option value="yo">Yoruba</option>
+            <option value="zu">Zulu</option>
+        </select>
+
+        <div class="button-group">
+            <button id="dictateBtn" aria-label="Start dictation">Dictate</button>
+            <button id="convertBtn" aria-label="Convert text to speech">Convert</button>
+            <button id="playBtn" class="hidden" aria-label="Play audio">Play</button>
+            <button id="stopBtn" class="hidden" aria-label="Stop audio">Stop</button>
+            <button id="downloadBtn" class="hidden" aria-label="Download audio">Download</button>
+            <button id="convertAnotherBtn" class="hidden" aria-label="Convert another text">Convert Another</button>
+        </div>
+
+        <div id="status" class="status" aria-live="polite"></div>
+        <audio id="audioPlayer" class="hidden"></audio>
+    </div>
+
+    <script>
+        // DOM Elements
+        const DOM = {
+            textInput: document.getElementById('textInput'),
+            languageSelect: document.getElementById('languageSelect'),
+            dictateBtn: document.getElementById('dictateBtn'),
+            convertBtn: document.getElementById('convertBtn'),
+            playBtn: document.getElementById('playBtn'),
+            stopBtn: document.getElementById('stopBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            convertAnotherBtn: document.getElementById('convertAnotherBtn'),
+            status: document.getElementById('status'),
+            audioPlayer: document.getElementById('audioPlayer')
+        };
+        let audioBase64 = '';
+
+        // Show Toast Notification
+        function showToast(message, type = 'info') {
+            const background = {
+                success: '#28a745',
+                error: '#dc3545',
+                info: '#007bff'
+            }[type];
+            Toastify({
+                text: message,
+                duration: 5000,
+                close: false,
+                gravity: 'bottom',
+                position: 'center',
+                backgroundColor: background,
+                stopOnFocus: true
+            }).showToast();
+        }
+
+        // Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            const recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            DOM.dictateBtn.addEventListener('click', () => {
+                try {
+                    recognition.start();
+                    DOM.dictateBtn.textContent = 'Dictating...';
+                    DOM.dictateBtn.disabled = true;
+                    DOM.status.textContent = 'Listening...';
+                } catch (err) {
+                    showToast('Failed to start dictation. Please ensure microphone permissions are granted.', 'error');
+                    DOM.dictateBtn.textContent = 'Dictate';
+                    DOM.dictateBtn.disabled = false;
+                    DOM.status.textContent = '';
+                }
+            });
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                DOM.textInput.value = transcript;
+                DOM.dictateBtn.textContent = 'Dictate';
+                DOM.dictateBtn.disabled = false;
+                DOM.status.textContent = 'Dictation completed.';
+                showToast('Text dictated successfully.', 'success');
+            };
+
+            recognition.onerror = (event) => {
+                let errorMessage = 'Dictation error occurred.';
+                if (event.error === 'no-speech') {
+                    errorMessage = 'No speech detected. Please try again.';
+                } else if (event.error === 'not-allowed') {
+                    errorMessage = 'Microphone access denied. Please grant permission.';
+                }
+                showToast(errorMessage, 'error');
+                DOM.dictateBtn.textContent = 'Dictate';
+                DOM.dictateBtn.disabled = false;
+                DOM.status.textContent = '';
+            };
+
+            recognition.onend = () => {
+                if (DOM.dictateBtn.textContent === 'Dictating...') {
+                    DOM.dictateBtn.textContent = 'Dictate';
+                    DOM.dictateBtn.disabled = false;
+                    DOM.status.textContent = '';
+                }
+            };
+        } else {
+            DOM.dictateBtn.disabled = true;
+            DOM.dictateBtn.textContent = 'Dictation Not Supported';
+            DOM.status.textContent = 'Speech recognition is not supported in this browser.';
+            showToast('Speech recognition is not supported in this browser.', 'error');
+        }
+
+        // Convert Text to Speech
+        DOM.convertBtn.addEventListener('click', async () => {
+            if (!DOM.textInput.value.trim()) {
+                showToast('Please enter text to convert.', 'error');
+                DOM.status.textContent = 'Please enter text to convert.';
+                return;
+            }
+
+            DOM.convertBtn.textContent = 'Converting...';
+            DOM.convertBtn.disabled = true;
+            DOM.status.textContent = 'Converting to speech...';
+
+            const text = encodeURIComponent(DOM.textInput.value);
+            const lang = DOM.languageSelect.value;
+            const apiUrl = `https://techassistantforblind.com/modules/gtts.php?text=${text}&lang=${lang}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: { 'Referer': 'https://translate.google.com' }
+                });
+                if (!response.ok) throw new Error('Failed to fetch audio.');
+                const audioData = await response.text(); // data:audio/mpeg;base64,...
+
+                audioBase64 = audioData.replace('data:audio/mpeg;base64,', '');
+                DOM.audioPlayer.src = audioData;
+                DOM.status.textContent = 'Speech converted successfully!';
+                showToast('Speech converted successfully.', 'success');
+
+                DOM.playBtn.classList.remove('hidden');
+                DOM.downloadBtn.classList.remove('hidden');
+                DOM.convertAnotherBtn.classList.remove('hidden');
+                DOM.textInput.value = '';
+            } catch (error) {
+                DOM.status.textContent = 'Error: Failed to convert text to speech.';
+                showToast('Failed to convert text to speech.', 'error');
+            } finally {
+                DOM.convertBtn.textContent = 'Convert';
+                DOM.convertBtn.disabled = false;
+            }
+        });
+
+        // Play/Pause Audio
+        DOM.playBtn.addEventListener('click', () => {
+            if (DOM.audioPlayer.paused) {
+                try {
+                    DOM.audioPlayer.play();
+                    DOM.playBtn.textContent = 'Pause';
+                    DOM.playBtn.setAttribute('aria-label', 'Pause audio');
+                    DOM.stopBtn.classList.remove('hidden');
+                } catch (error) {
+                    // Silent failure
+                    DOM.playBtn.textContent = 'Retry';
+                    DOM.playBtn.setAttribute('aria-label', 'Play audio');
+                }
+            } else {
+                DOM.audioPlayer.pause();
+                DOM.playBtn.textContent = 'Resume';
+                DOM.playBtn.setAttribute('aria-label', 'Resume audio');
+            }
+        });
+
+        // Stop Audio
+        DOM.stopBtn.addEventListener('click', () => {
+            DOM.audioPlayer.pause();
+            DOM.audioPlayer.currentTime = 0;
+            DOM.playBtn.textContent = 'Play';
+            DOM.playBtn.setAttribute('aria-label', 'Play audio');
+            DOM.stopBtn.classList.add('hidden');
+        });
+
+        // Download Audio
+        DOM.downloadBtn.addEventListener('click', () => {
+            const date = new Date().toISOString().replace(/[:.]/g, '-');
+            const link = document.createElement('a');
+            link.href = `data:audio/mpeg;base64,${audioBase64}`;
+            link.download = `Toolnova_gtts_${date}.mp3`;
+            link.click();
+            showToast('Audio downloaded successfully.', 'success');
+        });
+
+        // Reset Everything
+        DOM.convertAnotherBtn.addEventListener('click', () => {
+            DOM.audioPlayer.pause();
+            DOM.audioPlayer.src = '';
+            audioBase64 = '';
+            DOM.textInput.value = '';
+            DOM.status.textContent = '';
+            DOM.playBtn.classList.add('hidden');
+            DOM.stopBtn.classList.add('hidden');
+            DOM.downloadBtn.classList.add('hidden');
+            DOM.convertAnotherBtn.classList.add('hidden');
+            DOM.playBtn.textContent = 'Play';
+            DOM.playBtn.setAttribute('aria-label', 'Play audio');
+            showToast('Ready to convert another text.', 'info');
+        });
+
+        // Audio Ended Event
+        DOM.audioPlayer.addEventListener('ended', () => {
+            DOM.playBtn.textContent = 'Replay';
+            DOM.playBtn.setAttribute('aria-label', 'Play audio');
+            DOM.stopBtn.classList.add('hidden');
+        });
+    </script>
+</body>
+</html>
