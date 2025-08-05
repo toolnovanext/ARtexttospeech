@@ -3,32 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Natural Voice Generator</title>
-    <!-- Tailwind CSS -->
+    <title>AI Natural speech Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
         }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: #6366f1;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Natural Voice Generator</h1>
+    <div class="bg-white rounded-2xl shadow-xl p-8 w-full max-w-2xl" role="main">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6" id="main-heading">Natural Voice Generator</h1>
+<p><strong>AI natural speech generator</strong> developed by: Sujan Rai and SM ripon.</p>
+
+        <hr class="mb-6 border-gray-200">
         
-        <!-- Text Input -->
         <div class="mb-4">
             <label for="inputText" class="block text-gray-700 font-medium mb-2">Enter Your Text Here</label>
-            <textarea id="inputText" rows="6" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors resize-none" placeholder="Type or paste your text..."></textarea>
+            <textarea id="inputText" rows="6" maxlength="7000" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors resize-none" placeholder="Type or paste your text..."></textarea>
+            <span id="charCount" class="text-sm text-gray-500 mt-1">0 / 7000 characters</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <!-- Voice Selection -->
             <div>
                 <label for="voiceSelect" class="block text-gray-700 font-medium mb-2">Select a Voice</label>
-                <select id="voiceSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-indigo-500 transition-colors">
+                <select id="voiceSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-indigo-500 transition-colors" aria-label="Select a voice for text to speech">
                     <option value="Zephyr">Zephyr (Bright)</option>
                     <option value="Puck">Puck (Upbeat)</option>
                     <option value="Charon">Charon (Informative)</option>
@@ -62,38 +75,68 @@
                 </select>
             </div>
             
-            <!-- Style Selection -->
             <div>
                 <label for="styleSelect" class="block text-gray-700 font-medium mb-2">Select a Style</label>
-                <select id="styleSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-indigo-500 transition-colors">
+                <select id="styleSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-indigo-500 transition-colors" aria-label="Select a speaking style">
                     <option value="">Normal</option>
-                    <option value="Say cheerfully: ">Cheerful</option>
-                    <option value="Say in a spooky whisper: ">Spooky Whisper</option>
-                    <option value="Say with an excited tone: ">Excited</option>
+                    <option value="cheerful">Cheerful</option>
+                    <option value="spooky whisper">Spooky Whisper</option>
+                    <option value="excited">Excited</option>
+                    <option value="sad">Sad</option>
+                    <option value="commanding">Commanding</option>
+                    <option value="gentle">Gentle</option>
+                    <option value="wise old sage">Wise Old Sage</option>
+                    <option value="news anchor">News Anchor</option>
+                    <option value="helpful assistant">Helpful Assistant</option>
+                    <option value="calm and soothing">Calm & Soothing</option>
+                    <option value="friendly and casual">Friendly & Casual</option>
+                    <option value="dramatic">Dramatic</option>
+                    <option value="mysterious">Mysterious</option>
+                    <option value="deep, resonant voice">Deep Resonant</option>
+                    <option value="motivational speaker">Motivational Speaker</option>
+                    <option value="educational, clear tone">Educational</option>
+                    <option value="a hint of sarcasm">Sarcastic</option>
+                    <option value="playful, teasing tone">Playful</option>
+                    <option value="bedtime story">Bedtime Story</option>
+                    <option value="official and formal tone">Formal</option>
+                    <option value="comedic, exaggerated tone">Comedic</option>
+                    <option value="serious and sincere tone">Serious</option>
+                    <option value="horror movie narrator">Horror Narrator</option>
                 </select>
             </div>
         </div>
         
-        <!-- Generate Button -->
+        <div class="mb-4">
+            <label for="promptText" class="block text-gray-700 font-medium mb-2">Or, describe a unique voice style here:</label>
+            <input type="text" id="promptText" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors" placeholder="e.g., 'as a cowboy from Texas with a drawl'" aria-label="Enter a natural language prompt for the voice style">
+        </div>
+        <hr class="my-6 border-gray-200">
+        
         <div class="flex justify-center mb-4">
-            <button id="generateBtn" class="py-3 px-6 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-md disabled:bg-gray-400">
-                Generate Voice
+            <button id="generateBtn" class="py-3 px-6 rounded-lg font-semibold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-md disabled:bg-gray-400 flex items-center justify-center gap-2" aria-live="polite" aria-label="Generate voice">
+                <span id="generateBtnText">Generate Voice</span>
+                <span id="generateSpinner" class="hidden spinner"></span>
             </button>
         </div>
 
-        <!-- Status Message -->
-        <div id="statusMessage" class="text-center text-gray-600 mb-4 h-6"></div>
+        <div id="statusContainer" class="text-center text-gray-600 mb-4 h-12" role="status" aria-live="polite">
+            <p id="statusMessage" class="h-6"></p>
+            <br>
+            <div id="progressIndicator" class="hidden h-6 flex items-center justify-center" aria-label="Audio generation progress">
+                <span class="text-sm">Creating natural speech...</span>
+                <span class="spinner ml-2" role="progressbar"></span>
+            </div>
+        </div>
 
-        <!-- Audio Control Buttons -->
         <div id="audioControls" class="flex flex-col sm:flex-row gap-4 hidden">
-            <button id="playBtn" disabled class="flex-1 py-3 px-6 rounded-lg font-semibold text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50 transition-colors shadow-md disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-400">
-                Play Audio
+            <button id="playBtn" disabled class="flex-1 py-3 px-6 rounded-lg font-semibold text-indigo-600 border-2 border-indigo-600 hover:bg-indigo-50 transition-colors shadow-md disabled:bg-gray-200 disabled:text-gray-400 disabled:border-gray-400" aria-label="Play generated audio">
+                <span id="playBtnText">Play Audio</span>
             </button>
-            <button id="downloadBtn" disabled class="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors shadow-md disabled:bg-gray-400">
-                Download Audio
+            <button id="downloadBtn" disabled class="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700 transition-colors shadow-md disabled:bg-gray-400" aria-label="Download generated audio">
+                <span>Download Audio</span>
             </button>
-            <button id="resetBtn" class="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-gray-600 hover:bg-gray-700 transition-colors shadow-md">
-                Generate Another
+            <button id="resetBtn" class="flex-1 py-3 px-6 rounded-lg font-semibold text-white bg-gray-600 hover:bg-gray-700 transition-colors shadow-md" aria-label="Generate another voice">
+                <span>Generate Another</span>
             </button>
         </div>
     </div>
@@ -103,12 +146,18 @@
         const inputText = document.getElementById('inputText');
         const voiceSelect = document.getElementById('voiceSelect');
         const styleSelect = document.getElementById('styleSelect');
+        const promptText = document.getElementById('promptText');
         const generateBtn = document.getElementById('generateBtn');
+        const generateBtnText = document.getElementById('generateBtnText');
+        const generateSpinner = document.getElementById('generateSpinner');
         const playBtn = document.getElementById('playBtn');
+        const playBtnText = document.getElementById('playBtnText');
         const downloadBtn = document.getElementById('downloadBtn');
         const resetBtn = document.getElementById('resetBtn');
         const statusMessage = document.getElementById('statusMessage');
+        const progressIndicator = document.getElementById('progressIndicator');
         const audioControls = document.getElementById('audioControls');
+        const charCount = document.getElementById('charCount');
 
         let audioBlob = null;
         let audioContext = null;
@@ -121,34 +170,20 @@
             const buffer = new ArrayBuffer(44 + numSamples * 2);
             const view = new DataView(buffer);
 
-            // RIFF identifier
             writeString(view, 0, 'RIFF');
-            // file length
             view.setUint32(4, 36 + numSamples * 2, true);
-            // RIFF type
             writeString(view, 8, 'WAVE');
-            // format chunk identifier
             writeString(view, 12, 'fmt ');
-            // format chunk length
             view.setUint32(16, 16, true);
-            // sample format (1 = PCM)
             view.setUint16(20, 1, true);
-            // channel count
             view.setUint16(22, 1, true);
-            // sample rate
             view.setUint32(24, sampleRate, true);
-            // byte rate (sample rate * block align)
             view.setUint32(28, sampleRate * 2, true);
-            // block align (channels * bits per sample / 8)
             view.setUint16(32, 2, true);
-            // bits per sample
             view.setUint16(34, 16, true);
-            // data chunk identifier
             writeString(view, 36, 'data');
-            // data chunk length
             view.setUint32(40, numSamples * 2, true);
 
-            // Write the PCM data
             let offset = 44;
             for (let i = 0; i < numSamples; i++) {
                 view.setInt16(offset, pcmData[i], true);
@@ -164,24 +199,35 @@
             }
         };
 
-        // Function to handle the API request for audio generation
         async function generateAudio() {
-            // Check if text is provided
-            if (inputText.value.trim() === '') {
+            const userText = inputText.value.trim();
+            if (userText === '') {
                 statusMessage.textContent = 'Please enter a text to convert.';
                 return;
             }
 
-            // Disable button, update text, and show processing status
+            // Disable buttons and show loading state
             generateBtn.disabled = true;
-            generateBtn.textContent = 'Processing';
-            statusMessage.textContent = 'AI is processing, please wait...';
+            generateBtnText.textContent = 'Processing';
+            generateSpinner.classList.remove('hidden');
+            progressIndicator.classList.remove('hidden');
+            statusMessage.textContent = ''; // Clear status message while processing
             audioControls.classList.add('hidden');
 
-            // Construct the prompt
-            const stylePrompt = styleSelect.value;
-            const userText = inputText.value.trim();
-            const fullText = `${stylePrompt}${userText}`;
+            // Construct the prompt based on user input
+            const styleValue = styleSelect.value;
+            const promptValue = promptText.value.trim();
+
+            let combinedPrompt = '';
+            if (styleValue && promptValue) {
+                combinedPrompt = `style: ${styleValue} prompts: ${promptValue}`;
+            } else if (styleValue) {
+                combinedPrompt = `style: ${styleValue}`;
+            } else if (promptValue) {
+                combinedPrompt = `prompts: ${promptValue}`;
+            }
+
+            const fullText = combinedPrompt ? `${combinedPrompt} "${userText}"` : userText;
 
             const payload = {
                 contents: [{
@@ -198,11 +244,11 @@
                 model: "gemini-2.5-flash-preview-tts"
             };
 
+
             const apiKey = "AIzaSyC2Fsjk3yCRA8hDVYgg5LlMn4sxwoJJaWU";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
 
             try {
-                // Fetch call with exponential backoff for retries
                 let response;
                 let attempt = 0;
                 const maxAttempts = 5;
@@ -213,7 +259,7 @@
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         });
-                        if (response.status !== 429) break; // Break if not a rate limit error
+                        if (response.status !== 429) break;
                         
                         attempt++;
                         const delay = Math.pow(2, attempt) * 1000;
@@ -238,32 +284,32 @@
                     throw new Error('API did not return valid audio data.');
                 }
                 
-                // Get sample rate from mimeType, e.g., "audio/L16;rate=24000"
                 const sampleRateMatch = mimeType.match(/rate=(\d+)/);
                 const sampleRate = sampleRateMatch ? parseInt(sampleRateMatch[1], 10) : 24000;
                 
                 const pcmData = Uint8Array.from(atob(audioData), c => c.charCodeAt(0));
                 const pcm16 = new Int16Array(pcmData.buffer);
 
-                // Convert PCM to WAV and store as a blob
                 audioBlob = pcmToWav(pcm16, sampleRate);
                 
-                // Enable audio buttons, show controls, and update status
                 generateBtn.disabled = false;
-                generateBtn.textContent = 'Generate Voice';
+                generateBtnText.textContent = 'Generate Voice';
+                generateSpinner.classList.add('hidden');
+                progressIndicator.classList.add('hidden');
                 playBtn.disabled = false;
                 downloadBtn.disabled = false;
                 audioControls.classList.remove('hidden');
-                statusMessage.textContent = 'AI has generated your natural voice now.';
+                statusMessage.textContent = 'AI has generated speech now.';
             } catch (error) {
                 console.error('Error generating audio:', error);
                 statusMessage.textContent = `Error: ${error.message}. Please try again.`;
                 generateBtn.disabled = false;
-                generateBtn.textContent = 'Generate Voice';
+                generateBtnText.textContent = 'Generate Voice';
+                generateSpinner.classList.add('hidden');
+                progressIndicator.classList.add('hidden');
             }
         }
 
-        // Function to play or pause the audio
         async function playAudio() {
             if (!audioBlob) {
                 statusMessage.textContent = 'No audio to play. Please generate a voice first.';
@@ -272,37 +318,40 @@
 
             if (isPlaying) {
                 if (audioSource) {
-                    audioSource.stop();
+                    audioContext.suspend();
                 }
                 isPlaying = false;
-                playBtn.textContent = 'Play Audio';
+                playBtnText.textContent = 'Play Audio';
             } else {
                 if (!audioContext) {
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 }
+                
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                } else {
+                    const reader = new FileReader();
+                    reader.onload = async (e) => {
+                        const audioBuffer = await audioContext.decodeAudioData(e.target.result);
+                        
+                        audioSource = audioContext.createBufferSource();
+                        audioSource.buffer = audioBuffer;
+                        audioSource.connect(audioContext.destination);
+                        audioSource.start(0);
 
-                const reader = new FileReader();
-                reader.onload = async (e) => {
-                    const audioBuffer = await audioContext.decodeAudioData(e.target.result);
-                    
-                    audioSource = audioContext.createBufferSource();
-                    audioSource.buffer = audioBuffer;
-                    audioSource.connect(audioContext.destination);
-                    audioSource.start(0);
-
-                    isPlaying = true;
-                    playBtn.textContent = 'Pause Audio';
-                    
-                    audioSource.onended = () => {
-                        isPlaying = false;
-                        playBtn.textContent = 'Play Audio';
+                        audioSource.onended = () => {
+                            isPlaying = false;
+                            playBtnText.textContent = 'Play Audio';
+                        };
                     };
-                };
-                reader.readAsArrayBuffer(audioBlob);
+                    reader.readAsArrayBuffer(audioBlob);
+                }
+
+                isPlaying = true;
+                playBtnText.textContent = 'Pause Audio';
             }
         }
 
-        // Function to download the audio
         function downloadAudio() {
             if (!audioBlob) {
                 statusMessage.textContent = 'No audio to download. Please generate a voice first.';
@@ -323,18 +372,21 @@
             URL.revokeObjectURL(url);
         }
 
-        // Function to reset the UI
         function resetUI() {
             inputText.value = '';
+            promptText.value = '';
             voiceSelect.value = 'Kore';
             styleSelect.value = '';
             statusMessage.textContent = '';
-            generateBtn.textContent = 'Generate Voice';
+            generateBtnText.textContent = 'Generate Voice';
             generateBtn.disabled = false;
-            playBtn.textContent = 'Play Audio';
+            playBtnText.textContent = 'Play Audio';
             playBtn.disabled = true;
             downloadBtn.disabled = true;
             audioControls.classList.add('hidden');
+            generateSpinner.classList.add('hidden');
+            progressIndicator.classList.add('hidden');
+            charCount.textContent = '0 / 7000 characters';
             
             audioBlob = null;
             if (audioSource) {
@@ -342,11 +394,20 @@
                 audioSource = null;
             }
             if (audioContext) {
-                audioContext.close();
+                // Safely close the AudioContext to release system resources
+                if (audioContext.state !== 'closed') {
+                    audioContext.close();
+                }
                 audioContext = null;
             }
             isPlaying = false;
         }
+
+        // Event listener for character count
+        inputText.addEventListener('input', () => {
+            const currentLength = inputText.value.length;
+            charCount.textContent = `${currentLength} / 7000 characters`;
+        });
 
         // Attach event listeners
         generateBtn.addEventListener('click', generateAudio);
