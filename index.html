@@ -76,39 +76,9 @@
             </div>
             
             <div>
-                <label for="styleSelect" class="block text-gray-700 font-medium mb-2">Select a Style</label>
-                <select id="styleSelect" class="w-full p-3 border-2 border-gray-300 rounded-lg bg-white focus:outline-none focus:border-indigo-500 transition-colors" aria-label="Select a speaking style">
-                    <option value="">Normal</option>
-                    <option value="cheerful">Cheerful</option>
-                    <option value="spooky whisper">Spooky Whisper</option>
-                    <option value="excited">Excited</option>
-                    <option value="sad">Sad</option>
-                    <option value="commanding">Commanding</option>
-                    <option value="gentle">Gentle</option>
-                    <option value="wise old sage">Wise Old Sage</option>
-                    <option value="news anchor">News Anchor</option>
-                    <option value="helpful assistant">Helpful Assistant</option>
-                    <option value="calm and soothing">Calm & Soothing</option>
-                    <option value="friendly and casual">Friendly & Casual</option>
-                    <option value="dramatic">Dramatic</option>
-                    <option value="mysterious">Mysterious</option>
-                    <option value="deep, resonant voice">Deep Resonant</option>
-                    <option value="motivational speaker">Motivational Speaker</option>
-                    <option value="educational, clear tone">Educational</option>
-                    <option value="a hint of sarcasm">Sarcastic</option>
-                    <option value="playful, teasing tone">Playful</option>
-                    <option value="bedtime story">Bedtime Story</option>
-                    <option value="official and formal tone">Formal</option>
-                    <option value="comedic, exaggerated tone">Comedic</option>
-                    <option value="serious and sincere tone">Serious</option>
-                    <option value="horror movie narrator">Horror Narrator</option>
-                </select>
+                <label for="promptText" class="block text-gray-700 font-medium mb-2">Describe a unique voice style here (Optional):</label>
+                <input type="text" id="promptText" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors" placeholder="e.g., 'as a cowboy from Texas with a drawl'" aria-label="Enter a natural language prompt for the voice style">
             </div>
-        </div>
-        
-        <div class="mb-4">
-            <label for="promptText" class="block text-gray-700 font-medium mb-2">Or, describe a unique voice style here:</label>
-            <input type="text" id="promptText" class="w-full p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500 transition-colors" placeholder="e.g., 'as a cowboy from Texas with a drawl'" aria-label="Enter a natural language prompt for the voice style">
         </div>
         <hr class="my-6 border-gray-200">
         
@@ -145,8 +115,7 @@
         // Get all the DOM elements
         const inputText = document.getElementById('inputText');
         const voiceSelect = document.getElementById('voiceSelect');
-        const styleSelect = document.getElementById('styleSelect');
-        const promptText = document.getElementById('promptText');
+        const promptText = document.getElementById('promptText'); // No styleSelect needed now
         const generateBtn = document.getElementById('generateBtn');
         const generateBtnText = document.getElementById('generateBtnText');
         const generateSpinner = document.getElementById('generateSpinner');
@@ -214,20 +183,8 @@
             statusMessage.textContent = ''; // Clear status message while processing
             audioControls.classList.add('hidden');
 
-            // Construct the prompt based on user input
-            const styleValue = styleSelect.value;
             const promptValue = promptText.value.trim();
-
-            let combinedPrompt = '';
-            if (styleValue && promptValue) {
-                combinedPrompt = `style: ${styleValue} prompts: ${promptValue}`;
-            } else if (styleValue) {
-                combinedPrompt = `style: ${styleValue}`;
-            } else if (promptValue) {
-                combinedPrompt = `prompts: ${promptValue}`;
-            }
-
-            const fullText = combinedPrompt ? `${combinedPrompt} "${userText}"` : userText;
+            const fullText = promptValue ? `prompts: ${promptValue} "${userText}"` : userText;
 
             const payload = {
                 contents: [{
@@ -244,8 +201,7 @@
                 model: "gemini-2.5-flash-preview-tts"
             };
 
-
-            const apiKey = "AIzaSyC2Fsjk3yCRA8hDVYgg5LlMn4sxwoJJaWU";
+            const apiKey = "AIzaSyAsnCW93NN4GS7WD5f8su5S6EeVdQiA_Ls";
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
 
             try {
@@ -376,7 +332,6 @@
             inputText.value = '';
             promptText.value = '';
             voiceSelect.value = 'Kore';
-            styleSelect.value = '';
             statusMessage.textContent = '';
             generateBtnText.textContent = 'Generate Voice';
             generateBtn.disabled = false;
@@ -409,7 +364,7 @@
             charCount.textContent = `${currentLength} / 7000 characters`;
         });
 
-        // Attach event listeners
+        // Event listeners for buttons
         generateBtn.addEventListener('click', generateAudio);
         playBtn.addEventListener('click', playAudio);
         downloadBtn.addEventListener('click', downloadAudio);
